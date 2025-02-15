@@ -36,7 +36,7 @@ public class CustomerContactsService(ICustomerContactsRepository customerContact
 
     public async Task<CustomerContacts> UpdateCustomerContactsAsync(CustomerContactsUpdateForm form)
     {
-        var entity = await _customerContactsRepository.UpdateAsync(CustomerContactsFactory.Create(form));
+        var entity = await _customerContactsRepository.UpdateAsync(x => x.Id == form.Id, CustomerContactsFactory.Create(form));
         var customerContacts = CustomerContactsFactory.Create(entity);
         return customerContacts ?? null!;
     }

@@ -9,7 +9,7 @@ using Data.Entities;
 
 namespace Business.Models
 {
-    internal class CustomerContacts
+    public class CustomerContacts
     {
       
         public int Id { get; set; }

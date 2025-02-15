@@ -9,7 +9,7 @@ namespace Business.Factories;
     {
         public static UserRegistrationForm Create() => new();
 
-        public static UserRegistrationForm Create(UserRegistrationForm form) => new()
+        public static UserEntity Create(UserRegistrationForm form) => new()
         {
             FirstName = form.FirstName,
             LastName = form.LastName,

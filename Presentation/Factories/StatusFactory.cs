@@ -10,7 +10,7 @@ public static class StatusFactory
 {
     public static StatusRegistrationForm Create() => new();
 
-    public static StatusRegistrationForm Create(StatusRegistrationForm form) => new()
+    public static StatusEntity Create(StatusRegistrationForm form) => new()
     {
         StatusName = form.StatusName,
 

@@ -36,7 +36,7 @@ public class UserService(IUserRepository userRepository)
 
     public async Task<User> UpdateUserAsync(UserUpdateForm form)
     {
-        var entity = await _userRepository.UpdateAsync(UserFactory.Create(form));
+        var entity = await _userRepository.UpdateAsync(x => x.Id == form.Id, UserFactory.Create(form));
         var user = UserFactory.Create(entity);
         return user ?? null!;
     }

@@ -36,7 +36,7 @@ public class StatusService(IStatusRepository statusRepository)
 
     public async Task<Status> UpdateStatusAsync(StatusUpdateForm form)
     {
-        var entity = await _statusRepository.UpdateAsync(StatusFactory.Create(form));
+        var entity = await _statusRepository.UpdateAsync(x => x.Id == form.Id, StatusFactory.Create(form));
         var status = StatusFactory.Create(entity);
         return status ?? null!;
     }

@@ -37,7 +37,7 @@ public class RoleService(IRoleRepository roleRepository)
 
     public async Task<Role> UpdateRoleAsync(RoleUpdateForm form)
     {
-        var entity = await _roleRepository.UpdateAsync(RoleFactory.Create(form));
+        var entity = await _roleRepository.UpdateAsync(x => x.Id == form.Id, RoleFactory.Create(form));
         var role = RoleFactory.Create(entity);
         return role ?? null!;
     }

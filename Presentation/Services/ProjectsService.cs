@@ -35,7 +35,7 @@ namespace Business.Services;
 
         public async Task<Projects> UpdateProjectsAsync(ProjectsUpdateForm form)
         {
-            var entity = await _projectsRepository.UpdateAsync(ProjectsFactory.Create(form));
+            var entity = await _projectsRepository.UpdateAsync(x => x.Id == form.Id, ProjectsFactory.Create(form));
             var project = ProjectsFactory.Create(entity);
             return project ?? null!;
         }

@@ -35,7 +35,7 @@ public class ProductService(IProductRepository productRepository)
 
     public async Task<Product> UpdateProductAsync(ProductUpdateForm form)
     {
-        var entity = await _productRepository.UpdateAsync(ProductFactory.Create(form));
+        var entity = await _productRepository.UpdateAsync(x => x.Id == form.Id, ProductFactory.Create(form));
         var product = ProductFactory.Create(entity);
         return product ?? null!;
     }

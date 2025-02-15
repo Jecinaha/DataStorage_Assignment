@@ -10,7 +10,7 @@ public static class RoleFactory
 {
     public static RoleRegistrationForm Create() => new();
 
-    public static RoleRegistrationForm Create(RoleRegistrationForm form) => new()
+    public static RoleEntity Create(RoleRegistrationForm form) => new()
     {
         RoleName = form.RoleName,
      

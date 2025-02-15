@@ -8,7 +8,7 @@ public static class ProjectsFactory
 {
     public static ProjectsRegistrationForm Create() => new();
 
-    public static ProjectsRegistrationForm Create(ProjectsRegistrationForm form) => new()
+    public static ProjectsEntity Create(ProjectsRegistrationForm form) => new()
     {
         Title = form.Title,
         Description = form.Description,

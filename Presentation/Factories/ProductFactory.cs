@@ -11,7 +11,7 @@ public static class ProductFactory
 {
     public static ProductRegistrationForm Create(ProjectsEntity entity) => new();
 
-    public static ProductRegistrationForm Create(ProductRegistrationForm form) => new()
+    public static ProductEntity Create(ProductRegistrationForm form) => new()
     {
         ProductName = form.ProductName,
         Price = form.Price, 
