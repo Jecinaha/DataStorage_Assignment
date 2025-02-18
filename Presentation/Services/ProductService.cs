@@ -1,19 +1,20 @@
 ﻿using System.Linq.Expressions;
 using Business.Dtos;
 using Business.Factories;
+using Business.Interfaces;
 using Business.Models;
 using Data.Entities;
 using Data.Interfaces;
 
 namespace Business.Services;
 
-public class ProductService(IProductRepository productRepository)
+public class ProductService(IProductRepository productRepository) : IProductService
 {
     private readonly IProductRepository _productRepository = productRepository;
 
     public async Task<Product> CreateProductAsync(ProductRegistrationForm form)
     {
-        var entity = await _productRepository.GetAsync(x =>x.ProductName == form.ProductName);
+        var entity = await _productRepository.GetAsync(x => x.ProductName == form.ProductName);
         entity ??= await _productRepository.CreateAsync(ProductFactory.Create(form));
 
         return ProductFactory.Create(entity);
@@ -39,7 +40,7 @@ public class ProductService(IProductRepository productRepository)
         var product = ProductFactory.Create(entity);
         return product ?? null!;
     }
-    
+
     public async Task<bool> DeleteProductAsync(int id)
     {
         var result = await _productRepository.DeleteAsync(x => x.Id == id);

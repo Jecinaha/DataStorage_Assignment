@@ -10,8 +10,15 @@ public class ProjectsEntity
 {
 
     [Key]
-    public int Id { get; set; }
+    public int Id { get; set; } // Primary Key
 
+    public int StatusId { get; set; } // Foreign Key
+
+    public object CustomerId { get; set; } // Foreign Key
+
+    public int ProductId { get; set; } // Foreign Key
+
+    public int UserId { get; set; } // Foreign Key
 
     [Required]
     [Column(TypeName = "nvarchar(150)")]
@@ -27,18 +34,13 @@ public class ProjectsEntity
     [Required]
     [Column(TypeName = "date")]
     public DateTime EndDate { get; set; }
+   
+    public virtual StatusEntity Status { get; set; } = null!;
 
-    public int StatusId { get; set; }
-    public StatusEntity Status { get; set; } = null!;
-
-    public int CustumerId { get; set; }
-    public CustomerEntity Custumer { get; set; } = null!;
-
-    public int ProductId { get; set; }
-    public ProductEntity Product { get; set; } = null!;
-
-    public int UserId { get; set; }
-    public UserEntity User { get; set; } = null!;
-
-
+    public virtual CustomerEntity Custumer { get; set; } = null!;
+   
+    public virtual ProductEntity Product { get; set; } = null!;
+   
+    public virtual UserEntity User { get; set; } = null!;
+    public object Customer { get; internal set; }
 }

@@ -1,5 +1,6 @@
 ﻿using Business.Dtos;
 using Business.Factories;
+using Business.Interfaces;
 using Business.Models;
 using Data.Entities;
 using Data.Interfaces;
@@ -8,7 +9,7 @@ using System.Linq.Expressions;
 namespace Business.Services;
 
 
-public class CustomerContactsService(ICustomerContactsRepository customerContactsRepository)
+public class CustomerContactsService(ICustomerContactsRepository customerContactsRepository) : ICustomerContactsService
 {
     private readonly ICustomerContactsRepository _customerContactsRepository = customerContactsRepository;
 
@@ -24,7 +25,7 @@ public class CustomerContactsService(ICustomerContactsRepository customerContact
     {
         var entities = await _customerContactsRepository.GetAllAsync();
         var customerContacts = entities.Select(CustomerContactsFactory.Create);
-        return customerContacts ?? Enumerable.Empty<CustomerContacts>();
+        return customerContacts ?? [];
     }
 
     public async Task<CustomerContacts> GetCustomerContactByIdAsync(Expression<Func<CustomerContactsEntity, bool>> expression)

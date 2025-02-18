@@ -1,6 +1,7 @@
 ﻿
 using Business.Dtos;
 using Business.Factories;
+using Business.Interfaces;
 using Business.Models;
 using Data.Entities;
 using Data.Interfaces;
@@ -8,7 +9,7 @@ using System.Linq.Expressions;
 
 namespace Business.Services;
 
-public class UserService(IUserRepository userRepository)
+public class UserService(IUserRepository userRepository) : IUserService
 {
     private readonly IUserRepository _userRepository = userRepository;
 
