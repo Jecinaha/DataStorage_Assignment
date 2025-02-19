@@ -1,31 +1,14 @@
-﻿
+﻿using System.Configuration;
+using System.Data;
 using System.Windows;
-using MainApp.WiewModels;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
-namespace MainApp;
-public partial class App : Application
+namespace MainApp
 {
-    private IHost _host;
-
-    public App ()
+    /// <summary>
+    /// Interaction logic for App.xaml
+    /// </summary>
+    public partial class App : Application
     {
-        _host = Host.CreateDefaultBuilder()
-            .ConfigureServices(services =>
-            {
-                services.AddSingleton<MainViewModel>();
-
-                services.AddTransient<ProjectsViewModel>();
-            })
-            .Build();
     }
-
-    protected override void OnStartup(StartupEventArgs e)
-    {
-        var mainWindow = _host.Services.GetRequiredService<MainWindow>();
-        mainWindow.Show();
-    }
-
 
 }
