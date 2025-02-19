@@ -53,13 +53,13 @@ public class DataContext(DbContextOptions options) : DbContext(options)
 
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<CustomerEntity>()
-            .HasKey(x => new { x.Id, x.CustomerContactsId});
+        modelBuilder.Entity<CustomerContactsEntity>()
+            .HasKey(x => new { x.Id, x.CustomerId});
 
-        modelBuilder.Entity<CustomerEntity>()
-           .HasOne(x => x.CustomerContacts)
+        modelBuilder.Entity<CustomerContactsEntity>()
+           .HasOne(x => x.Customer)
            .WithMany()
-           .HasForeignKey(x => x.CustomerContactsId);
+           .HasForeignKey(x => x.CustomerId);
    
         base.OnModelCreating(modelBuilder);
 

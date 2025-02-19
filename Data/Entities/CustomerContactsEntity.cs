@@ -17,5 +17,9 @@ public class CustomerContactsEntity
     [Column(TypeName = "nvarchar(50)")]
     public string LastName { get; set; } = null!;
 
-    public virtual ICollection<CustomerEntity> Contacts { get; set; } = [];
+    public int CustomerId { get; set; } // Foreign Key
+
+    public virtual CustomerEntity Customer { get; set; } = null!;
+
+   
 }

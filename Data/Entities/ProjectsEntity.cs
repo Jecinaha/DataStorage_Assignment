@@ -14,7 +14,7 @@ public class ProjectsEntity
 
     public int StatusId { get; set; } // Foreign Key
 
-    public object CustomerId { get; set; } // Foreign Key
+    public int CustomerId { get; set; } // Foreign Key
 
     public int ProductId { get; set; } // Foreign Key
 
@@ -37,10 +37,9 @@ public class ProjectsEntity
    
     public virtual StatusEntity Status { get; set; } = null!;
 
-    public virtual CustomerEntity Custumer { get; set; } = null!;
+    public virtual CustomerEntity Customer { get; set; } = null!;
    
     public virtual ProductEntity Product { get; set; } = null!;
    
     public virtual UserEntity User { get; set; } = null!;
-    public object Customer { get; internal set; }
 }

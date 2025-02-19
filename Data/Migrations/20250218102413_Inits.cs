@@ -68,19 +68,23 @@ namespace Data.Migrations
                 name: "Contacts",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    CustomerId = table.Column<int>(type: "int", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(50)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(50)", nullable: false),
-                    CustomerId = table.Column<int>(type: "int", nullable: false),
-                    CustumerId = table.Column<int>(type: "int", nullable: false)
+                    CustomerEntityId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Contacts", x => x.Id);
+                    table.PrimaryKey("PK_Contacts", x => new { x.Id, x.CustomerId });
                     table.ForeignKey(
-                        name: "FK_Contacts_Customers_CustumerId",
-                        column: x => x.CustumerId,
+                        name: "FK_Contacts_Customers_CustomerEntityId",
+                        column: x => x.CustomerEntityId,
+                        principalTable: "Customers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Contacts_Customers_CustomerId",
+                        column: x => x.CustomerId,
                         principalTable: "Customers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -92,10 +96,10 @@ namespace Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    RoleId = table.Column<int>(type: "int", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(50)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(50)", nullable: false),
-                    Email = table.Column<string>(type: "varchar(150)", nullable: false),
-                    RoleId = table.Column<int>(type: "int", nullable: false)
+                    Email = table.Column<string>(type: "varchar(150)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -112,23 +116,29 @@ namespace Data.Migrations
                 name: "Projects",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    StatusId = table.Column<int>(type: "int", nullable: false),
+                    CustomerId = table.Column<int>(type: "int", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(150)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     StartDate = table.Column<DateTime>(type: "date", nullable: false),
                     EndDate = table.Column<DateTime>(type: "date", nullable: false),
-                    StatusId = table.Column<int>(type: "int", nullable: false),
-                    CustumerId = table.Column<int>(type: "int", nullable: false),
-                    ProductId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false)
+                    CustomerEntityId = table.Column<int>(type: "int", nullable: true),
+                    UserEntityId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Projects", x => x.Id);
+                    table.PrimaryKey("PK_Projects", x => new { x.Id, x.StatusId, x.CustomerId, x.ProductId, x.UserId });
                     table.ForeignKey(
-                        name: "FK_Projects_Customers_CustumerId",
-                        column: x => x.CustumerId,
+                        name: "FK_Projects_Customers_CustomerEntityId",
+                        column: x => x.CustomerEntityId,
+                        principalTable: "Customers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Projects_Customers_CustomerId",
+                        column: x => x.CustomerId,
                         principalTable: "Customers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -145,6 +155,11 @@ namespace Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
+                        name: "FK_Projects_Users_UserEntityId",
+                        column: x => x.UserEntityId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                    table.ForeignKey(
                         name: "FK_Projects_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
@@ -153,14 +168,24 @@ namespace Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Contacts_CustumerId",
+                name: "IX_Contacts_CustomerEntityId",
                 table: "Contacts",
-                column: "CustumerId");
+                column: "CustomerEntityId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Projects_CustumerId",
+                name: "IX_Contacts_CustomerId",
+                table: "Contacts",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Projects_CustomerEntityId",
                 table: "Projects",
-                column: "CustumerId");
+                column: "CustomerEntityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Projects_CustomerId",
+                table: "Projects",
+                column: "CustomerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Projects_ProductId",
@@ -171,6 +196,11 @@ namespace Data.Migrations
                 name: "IX_Projects_StatusId",
                 table: "Projects",
                 column: "StatusId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Projects_UserEntityId",
+                table: "Projects",
+                column: "UserEntityId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Projects_UserId",

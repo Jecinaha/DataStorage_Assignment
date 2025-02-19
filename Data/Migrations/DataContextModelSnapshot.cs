@@ -17,7 +17,10 @@ namespace Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.1")
+                .HasAnnotation("ProductVersion", "9.0.2")
+                .HasAnnotation("Proxies:ChangeTracking", false)
+                .HasAnnotation("Proxies:CheckEquality", false)
+                .HasAnnotation("Proxies:LazyLoading", true)
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -25,15 +28,12 @@ namespace Data.Migrations
             modelBuilder.Entity("Data.Entities.CustomerContactsEntity", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("CustomerId")
                         .HasColumnType("int");
 
-                    b.Property<int>("CustumerId")
+                    b.Property<int?>("CustomerEntityId")
                         .HasColumnType("int");
 
                     b.Property<string>("FirstName")
@@ -44,9 +44,11 @@ namespace Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(50)");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id", "CustomerId");
 
-                    b.HasIndex("CustumerId");
+                    b.HasIndex("CustomerEntityId");
+
+                    b.HasIndex("CustomerId");
 
                     b.ToTable("Contacts");
                 });
@@ -91,12 +93,21 @@ namespace Data.Migrations
             modelBuilder.Entity("Data.Entities.ProjectsEntity", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<int>("StatusId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("CustumerId")
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CustomerEntityId")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
@@ -106,29 +117,27 @@ namespace Data.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("date");
 
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("date");
-
-                    b.Property<int>("StatusId")
-                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(150)");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserEntityId")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id", "StatusId", "CustomerId", "ProductId", "UserId");
 
-                    b.HasIndex("CustumerId");
+                    b.HasIndex("CustomerEntityId");
+
+                    b.HasIndex("CustomerId");
 
                     b.HasIndex("ProductId");
 
                     b.HasIndex("StatusId");
+
+                    b.HasIndex("UserEntityId");
 
                     b.HasIndex("UserId");
 
@@ -201,42 +210,54 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Data.Entities.CustomerContactsEntity", b =>
                 {
-                    b.HasOne("Data.Entities.CustomerEntity", "Custumer")
+                    b.HasOne("Data.Entities.CustomerEntity", null)
                         .WithMany("Contacts")
-                        .HasForeignKey("CustumerId")
+                        .HasForeignKey("CustomerEntityId");
+
+                    b.HasOne("Data.Entities.CustomerEntity", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Custumer");
+                    b.Navigation("Customer");
                 });
 
             modelBuilder.Entity("Data.Entities.ProjectsEntity", b =>
                 {
-                    b.HasOne("Data.Entities.CustomerEntity", "Custumer")
+                    b.HasOne("Data.Entities.CustomerEntity", null)
                         .WithMany("Projects")
-                        .HasForeignKey("CustumerId")
+                        .HasForeignKey("CustomerEntityId");
+
+                    b.HasOne("Data.Entities.CustomerEntity", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Data.Entities.ProductEntity", "Product")
-                        .WithMany("Projects")
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Data.Entities.StatusEntity", "Status")
-                        .WithMany("Projects")
+                        .WithMany()
                         .HasForeignKey("StatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Data.Entities.UserEntity", "User")
+                    b.HasOne("Data.Entities.UserEntity", null)
                         .WithMany("Projects")
+                        .HasForeignKey("UserEntityId");
+
+                    b.HasOne("Data.Entities.UserEntity", "User")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Custumer");
+                    b.Navigation("Customer");
 
                     b.Navigation("Product");
 
@@ -248,7 +269,7 @@ namespace Data.Migrations
             modelBuilder.Entity("Data.Entities.UserEntity", b =>
                 {
                     b.HasOne("Data.Entities.RoleEntity", "Role")
-                        .WithMany("Users")
+                        .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -260,21 +281,6 @@ namespace Data.Migrations
                 {
                     b.Navigation("Contacts");
 
-                    b.Navigation("Projects");
-                });
-
-            modelBuilder.Entity("Data.Entities.ProductEntity", b =>
-                {
-                    b.Navigation("Projects");
-                });
-
-            modelBuilder.Entity("Data.Entities.RoleEntity", b =>
-                {
-                    b.Navigation("Users");
-                });
-
-            modelBuilder.Entity("Data.Entities.StatusEntity", b =>
-                {
                     b.Navigation("Projects");
                 });
 
