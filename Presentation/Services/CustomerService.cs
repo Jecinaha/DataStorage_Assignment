@@ -18,7 +18,7 @@ public class CustomerService(ICustomerRepository customerRepository) : ICustomer
 
         try
         {
-            if (await _customerRepository.GetAsync(x => ((CustomerEntity)x).CustomerName == form.CustomerName) != null)
+            if (await _customerRepository.GetAsync(x => x.CustomerName == form.CustomerName) != null)
                 return Result.AlreadyExists("Customer with this email already exists");
 
             var customerEntity = CustomerFactory.Create(form);

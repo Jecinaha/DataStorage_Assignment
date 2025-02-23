@@ -17,7 +17,7 @@ public static class CustomerFactory
     {
         Id = entity.Id,
         CustomerName = entity.CustomerName,
- 
+
     };
 
     public static CustomerEntity Create(CustomerEntity CustomerEntity, CustomerUpdateForm updateForm) => new()

@@ -68,19 +68,19 @@ public class MenuDialogs(IProjectsService projectsService, IStatusService Status
                 CreateCustomers();
                 break;
             case "2":
-                WiewAllCustomers();
+                ViewAllCustomers();
                 break;
             case "3":
                 CreateUser();
                 break;
             case "4":
-                WiewAllUsers();
+                ViewAllUsers();
                 break;
             case "5":
                 CreateProjects();
                 break;
             case "6":
-                WiewAllProject();
+                ViewAllProject();
                 break;
             case "7":
                 ViewProject();
@@ -98,26 +98,10 @@ public class MenuDialogs(IProjectsService projectsService, IStatusService Status
         Console.Clear();
 
         var customerRegistrationForm = CustomerFactory.Create();
-        var customerContactsRegistrationForm = CustomerContactsFactory.Create(2);
-
         customerRegistrationForm.CustomerName = PromptAndValidate(customerRegistrationForm, prompt: "Skriv in kundnamn: ", nameof(CustomerRegistrationForm.CustomerName));
-        customerContactsRegistrationForm.FirstName = PromptAndValidate(customerContactsRegistrationForm, prompt: "Skriv in kontaktpersonens förnamn: ", nameof(CustomerContactsRegistrationForm.FirstName));
-        customerContactsRegistrationForm.LastName = PromptAndValidate(customerContactsRegistrationForm, prompt: "Skriv in kontaktpersonens efternamn: ", nameof(CustomerContactsRegistrationForm.LastName));
 
-        var customerContactsResult = _customerContactsService.GetAllCustomerContactsAsync().Result;
-        if (customerContactsResult.Success)
-        {
-
-        }
-        else
-        {
-            OutputDialog("Kunde inte hämta rollinformation.");
-            return;
-        }
-
-        var result = _customerService.CreateCustomerAsync(customerRegistrationForm);
-
-        if (result != null)
+        var result = _customerService.CreateCustomerAsync(customerRegistrationForm).Result;
+        if (result.Success)
         {
             OutputDialog("Kunden har nu lagts till i din kundlista");
         }
@@ -128,7 +112,7 @@ public class MenuDialogs(IProjectsService projectsService, IStatusService Status
 
     }
 
-    public void WiewAllCustomers()
+    public void ViewAllCustomers()
     {
         var AllCustomersResponse = _customerService.GetAllCustomerAsync().Result;
 
@@ -147,9 +131,7 @@ public class MenuDialogs(IProjectsService projectsService, IStatusService Status
         {
             Console.WriteLine($"{"\nKundnummer: ",-5}{customer.Id}");
             Console.WriteLine($"{"\nKund: ",-5}{customer.CustomerName}");
-            Console.WriteLine($"{"\nKontaktperson: ",-5}{customer.Contacts}");
-
-
+            //Console.WriteLine($"{"\nKontaktperson: ",-5}{string.Join(", ", customer.Contacts.Select(x => $"{x.FirstName} {x.LastName}"))}");
 
             Console.WriteLine("\n.....................................");
         }
@@ -194,7 +176,7 @@ public class MenuDialogs(IProjectsService projectsService, IStatusService Status
             return;
         }
     }
-    public void WiewAllUsers()
+    public void ViewAllUsers()
     {
         var allUsersResponse = _userService.GetAllUsersAsync().Result;
         if (!allUsersResponse.Success)
@@ -368,7 +350,7 @@ public class MenuDialogs(IProjectsService projectsService, IStatusService Status
         return projectRegistrationForm;
     }
 
-    public void WiewAllProject()
+    public void ViewAllProject()
     {
         var allProjectsResponse = _projectsService.GetAllProjectsAsync().Result;
         if (!allProjectsResponse.Success)
