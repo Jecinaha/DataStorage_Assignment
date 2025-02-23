@@ -14,7 +14,7 @@ public static class UserFactory
         FirstName = form.FirstName,
         LastName = form.LastName,
         Email = form.Email.ToLower(),
-        RoleId = 2
+        RoleId = form.Role.Id
     };
 
     public static User Create(UserEntity entity) => new()

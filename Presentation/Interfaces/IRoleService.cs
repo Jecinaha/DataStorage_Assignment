@@ -8,8 +8,9 @@ namespace Business.Interfaces
         Task<Result> CreateRoleAsync(RoleRegistrationForm form);
         Task<IResult> DeleteRoleAsync(int id);
         Task<Result<IEnumerable<Role>>> GetAllRoleAsync();
-        Task<IResult> GetRoleByEmailAsync(string roleName);
+        Task<IResult> GetRoleByNameAsync(string roleName);
         Task<IResult> GetRoleByIdAsync(int id);
         Task<IResult> UpdateRoleAsync(int id, RoleUpdateForm updateForm);
+        Task<IResult> CreateDefaultRoles();
     }
 }

@@ -54,7 +54,7 @@ public class RoleService(IRoleRepository roleRepository) : IRoleService
         return Result<Role>.Ok(role);
     }
 
-    public async Task<IResult> GetRoleByEmailAsync(string roleName)
+    public async Task<IResult> GetRoleByNameAsync(string roleName)
     {
         var roleEntity = await _roleRepository.GetAsync(x => x.RoleName == roleName);
 
@@ -85,5 +85,30 @@ public class RoleService(IRoleRepository roleRepository) : IRoleService
         return result ? Result.Ok() : Result.BadRequest("Role update failed");
     }
 
+    public async Task<IResult> CreateDefaultRoles()
+    {
+        // Always create employee and admin roles
+        var employeeRoleResult = await GetRoleByNameAsync("Employee");
+        var adminRoleResult = await GetRoleByNameAsync("Admin");
+
+        if (!employeeRoleResult.Success)
+        {
+            var employeeRole = RoleFactory.Create(new RoleRegistrationForm { RoleName = "Employee" });
+            var result = await _roleRepository.CreateAsync(employeeRole);
+            if (result == null)
+                return Result.BadRequest("Employee role creation failed");
+
+        }
+
+        if (!adminRoleResult.Success)
+        {
+            var adminRole = RoleFactory.Create(new RoleRegistrationForm { RoleName = "Admin" });
+            var result = await _roleRepository.CreateAsync(adminRole);
+            if (result == null)
+                return Result.BadRequest("Admin role creation failed");
+        }
+
+        return Result.Ok();
+    }
 }
 

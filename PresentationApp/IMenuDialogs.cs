@@ -2,6 +2,6 @@
 {
     public interface IMenuDialogs
     {
-        public void ShowMainMenu();
+        public void Run();
     }
 }

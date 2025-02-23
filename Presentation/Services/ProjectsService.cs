@@ -12,7 +12,7 @@ public class ProjectsService(IProjectsRepository projectsRepository) : IProjects
     private readonly IProjectsRepository _projectsRepository = projectsRepository;
 
 
-    public async Task<IResult> CreateProjectsAsync(ProjectsRegistrationForm form)
+    public async Task<IResult> CreateProjectsAsync(ProjectsForm form)
     {
         if (form == null)
             return Result.BadRequest("Project registration form is required");
@@ -35,11 +35,11 @@ public class ProjectsService(IProjectsRepository projectsRepository) : IProjects
         }
     }
 
-    public async Task<IResult> GetAllProjectsAsync()
+    public async Task<Result<IEnumerable<Project>>> GetAllProjectsAsync()
     {
         var projectsEntity = await _projectsRepository.GetAllAsync();
         var projects = projectsEntity?.Select(ProjectsFactory.Create);
-        return Result<IEnumerable<Projects>>.Ok(projects);
+        return Result<IEnumerable<Project>>.Ok(projects);
     }
 
     public async Task<IResult> GetProjectsByIdAsync(int id)
@@ -50,7 +50,7 @@ public class ProjectsService(IProjectsRepository projectsRepository) : IProjects
             return Result.NotFound("Projects not found");
 
         var projects = ProjectsFactory.Create(projectsEntity);
-        return Result<Projects>.Ok(projects);
+        return Result<Project>.Ok(projects);
     }
 
     public async Task<IResult> GetProjectsByTitleAsync(string title)
@@ -61,16 +61,16 @@ public class ProjectsService(IProjectsRepository projectsRepository) : IProjects
             return Result.NotFound("Project not found");
 
         var projects = ProjectsFactory.Create(projectsEntity);
-        return Result<Projects>.Ok(projects);
+        return Result<Project>.Ok(projects);
     }
-    public async Task<IResult> UpdateProjectsAsync(int id, ProjectsUpdateForm updateForm)
+    public async Task<IResult> UpdateProjectsAsync(int id, ProjectsForm updateForm)
     {
         var projectsEntity = await _projectsRepository.GetAsync(x => x.Id == id);
         if (projectsEntity == null)
             return Result.NotFound("Project not found");
 
-        projectsEntity = ProjectsFactory.Create(projectsEntity, updateForm);
-        var result = await _projectsRepository.UpdateAsync(x => x.Id == updateForm.Id, projectsEntity);
+        projectsEntity = ProjectsFactory.CreateUpdate(id, updateForm);
+        var result = await _projectsRepository.UpdateAsync(x => x.Id == id, projectsEntity);
         return result != null ? Result.Ok() : Result.BadRequest("Project update failed");
     }
 

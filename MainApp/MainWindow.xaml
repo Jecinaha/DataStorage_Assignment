@@ -13,9 +13,9 @@
 
         <ContentControl Content="{Binding CurrentViewModel}">
             <ContentControl.Resources>
-                <DataTemplate DataType="{x:Type viewmodels:HomeViewModel}">
-                    <local:HomeView />
-                </DataTemplate>
+                <!--<DataTemplate DataType="{x:Type viewmodels:HomeViewModel}">-->
+                    <!--<local:HomeView />
+                </DataTemplate>-->
             </ContentControl.Resources>
             </ContentControl>
 

@@ -13,9 +13,5 @@ public class ProductEntity
     [Column(TypeName = "nvarchar(150)")]
     public string ProductName { get; set; } = null!;
 
-    [Required]
-    [Column (TypeName = "decimal(18,2)")]
-    public decimal Price { get; set; }
-
     public virtual ICollection<ProjectsEntity> Projects { get; set; } = [];
 }

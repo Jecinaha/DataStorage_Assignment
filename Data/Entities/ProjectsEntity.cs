@@ -12,13 +12,13 @@ public class ProjectsEntity
     [Key]
     public int Id { get; set; } // Primary Key
 
-    public int StatusId { get; set; } // Foreign Key
+    public int? StatusId { get; set; } // Foreign Key
 
-    public int CustomerId { get; set; } // Foreign Key
+    public int? CustomerId { get; set; } // Foreign Key
 
-    public int ProductId { get; set; } // Foreign Key
+    public int? ProductId { get; set; } // Foreign Key
 
-    public int UserId { get; set; } // Foreign Key
+    public int? UserId { get; set; } // Foreign Key
 
     [Required]
     [Column(TypeName = "nvarchar(150)")]

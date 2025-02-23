@@ -32,7 +32,7 @@ public class DataContext(DbContextOptions options) : DbContext(options)
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<ProjectsEntity>()
-            .HasKey(x => new { x.Id, x.StatusId, x.CustomerId, x.ProductId, x.UserId });
+            .HasKey(x => new { x.Id });
 
         modelBuilder.Entity<ProjectsEntity>()
             .HasOne(x => x.Status)
@@ -51,16 +51,14 @@ public class DataContext(DbContextOptions options) : DbContext(options)
             .WithMany()
             .HasForeignKey(x => x.UserId);
 
-        base.OnModelCreating(modelBuilder);
-
         modelBuilder.Entity<CustomerContactsEntity>()
-            .HasKey(x => new { x.Id, x.CustomerId});
+            .HasKey(x => new { x.Id });
 
         modelBuilder.Entity<CustomerContactsEntity>()
            .HasOne(x => x.Customer)
            .WithMany()
            .HasForeignKey(x => x.CustomerId);
-   
+
         base.OnModelCreating(modelBuilder);
 
     }

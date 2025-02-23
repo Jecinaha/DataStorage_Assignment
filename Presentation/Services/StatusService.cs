@@ -5,6 +5,7 @@ using Business.Interfaces;
 using Business.Models;
 using Data.Entities;
 using Data.Interfaces;
+using Data.Repositories;
 using System.Linq.Expressions;
 
 namespace Business.Services;
@@ -55,6 +56,17 @@ public class StatusService(IStatusRepository statusRepository) : IStatusService
         return Result<Status>.Ok(status);
     }
 
+    public async Task<IResult> GetStatusByNameAsync(string statusName)
+    {
+        var statusEntity = await _statusRepository.GetAsync(x => x.StatusName == statusName);
+
+        if (statusEntity == null)
+            return Result.NotFound("Status not found");
+
+        var status = StatusFactory.Create(statusEntity);
+        return Result<Status>.Ok(status);
+    }
+
     public async Task<IResult> UpdateStatusAsync(int id, StatusUpdateForm updateForm)
     {
         var statusEntity = await _statusRepository.GetAsync(x => x.Id == id);
@@ -74,6 +86,39 @@ public class StatusService(IStatusRepository statusRepository) : IStatusService
 
         var result = await _statusRepository.DeleteAsync(x => x.Id == id);
         return result ? Result.Ok() : Result.BadRequest("Status update failed");
+    }
+
+    public async Task<IResult> CreateDefaultStatuses()
+    {
+
+        var notStartedResult = await GetStatusByNameAsync("Ej påbörjad");
+        var startedResult = await GetStatusByNameAsync("Påbörjad");
+        var completedResult = await GetStatusByNameAsync("Avslutad");
+
+        if (!notStartedResult.Success)
+        {
+            var status = StatusFactory.Create(new StatusRegistrationForm { StatusName = "Ej påbörjad" });
+            var result = await _statusRepository.CreateAsync(status);
+            if (result == null)
+                return Result.BadRequest("Status creation failed");
+        }
+
+        if (!startedResult.Success)
+        {
+            var status = StatusFactory.Create(new StatusRegistrationForm { StatusName = "Påbörjad" });
+            var result = await _statusRepository.CreateAsync(status);
+            if (result == null)
+                return Result.BadRequest("Status creation failed");
+        }
+        if (!completedResult.Success)
+        {
+            var status = StatusFactory.Create(new StatusRegistrationForm { StatusName = "Avslutad" });
+            var result = await _statusRepository.CreateAsync(status);
+            if (result == null)
+                return Result.BadRequest("Status creation failed");
+        }
+
+        return Result.Ok();
     }
 
 

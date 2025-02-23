@@ -6,39 +6,44 @@ namespace Business.Factories;
 
 public static class ProjectsFactory
 {
-    public static ProjectsEntity Create(ProjectsRegistrationForm form) => new()
+    public static ProjectsEntity Create(ProjectsForm form) => new()
     {
         Title = form.Title,
         Description = form.Description,
         StartDate = form.StartDate,
         EndDate = form.EndDate,
+        CustomerId = form.Customer?.Id,
+        UserId = form.User?.Id,
+        ProductId = form.Product?.Id,
+        StatusId = form.Status?.Id
     };
 
-    public static Projects Create(ProjectsEntity entity) => new()
+    public static Project Create(ProjectsEntity entity) => new()
     {
         Id = entity.Id,
         Title = entity.Title,
         Description = entity.Description,
         StartDate = entity.StartDate,
         EndDate = entity.EndDate,
-        Status = StatusFactory.Create(entity.Status),
-        Customer = CustomerFactory.Create(entity.Customer),
-        Product = ProductFactory.Create(entity.Product),
-        User = UserFactory.Create(entity.User)
+        Status = entity.Status != null ? StatusFactory.Create(entity.Status) : null,
+        Customer = entity.Customer != null ? CustomerFactory.Create(entity.Customer) : null,
+        Product = entity.Product != null ? ProductFactory.Create(entity.Product) : null,
+        User = entity.User != null ? UserFactory.Create(entity.User) : null,
 
     };
 
-    public static ProjectsEntity Create(ProjectsEntity projectsEntity, ProjectsUpdateForm updateForm) => new()
+    public static ProjectsEntity CreateUpdate(int id, ProjectsForm updateForm) => new()
     {
-            Id = projectsEntity.Id,
-            Title = projectsEntity.Title,
-            Description = projectsEntity.Description,
-            StartDate = projectsEntity.StartDate,
-            EndDate = projectsEntity.EndDate,
-            Status = projectsEntity.Status,
-            Customer = projectsEntity.Customer,
-            Product = projectsEntity.Product,
-            User = projectsEntity.User
-
+        Id = id,
+        Title = updateForm.Title,
+        Description = updateForm.Description,
+        StartDate = updateForm.StartDate,
+        EndDate = updateForm.EndDate,
+        StatusId = updateForm.Status?.Id,
+        CustomerId = updateForm.Customer?.Id,
+        ProductId = updateForm.Product?.Id,
+        UserId = updateForm.User?.Id
     };
- }
+
+    public static ProjectsForm Create() => new();
+}

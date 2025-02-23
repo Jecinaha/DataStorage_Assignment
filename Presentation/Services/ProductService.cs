@@ -53,6 +53,18 @@ public class ProductService(IProductRepository productRepository) : IProductServ
         var product = ProductFactory.Create(productEntity);
         return Result<Product>.Ok(product);
     }
+
+    public async Task<IResult> GetProductByNameAsync(string productName)
+    {
+        var productEntity = await _productRepository.GetAsync(x => x.ProductName == productName);
+
+        if (productEntity == null)
+            return Result.NotFound("Product not found");
+
+        var product = ProductFactory.Create(productEntity);
+        return Result<Product>.Ok(product);
+    }
+
     public async Task<IResult> UpdateProductAsync(int id, ProductUpdateForm updateForm)
     {
         var productEntity = await _productRepository.GetAsync(x => x.Id == id);
@@ -73,4 +85,48 @@ public class ProductService(IProductRepository productRepository) : IProductServ
         var result = await _productRepository.DeleteAsync(x => x.Id == id);
         return result ? Result.Ok() : Result.BadRequest("Product update failed");
     }
+
+    public async Task<IResult> CreateDefaultProducts()
+    {
+
+        var roofMaintenance = await GetProductByNameAsync("Takvård");
+        var painting = await GetProductByNameAsync("Måleri");
+        var floorCare = await GetProductByNameAsync("Golvvård");
+        var carpenter = await GetProductByNameAsync("Snickeri");
+
+
+        if (!roofMaintenance.Success)
+        {
+            var service = ProductFactory.Create(new ProductRegistrationForm { ProductName = "Takvård" });
+            var result = await _productRepository.CreateAsync(service);
+            if (result == null)
+                return Result.BadRequest("Service creation failed");
+        }
+
+        if (!painting.Success)
+        {
+            var service = ProductFactory.Create(new ProductRegistrationForm { ProductName = "Måleri" });
+            var result = await _productRepository.CreateAsync(service);
+            if (result == null)
+                return Result.BadRequest("Service creation failed");
+        }
+        if (!floorCare.Success)
+        {
+            var service = ProductFactory.Create(new ProductRegistrationForm { ProductName = "Golvvård" });
+            var result = await _productRepository.CreateAsync(service);
+            if (result == null)
+                return Result.BadRequest("Service creation failed");
+        }
+        if (!carpenter.Success)
+        {
+            var service = ProductFactory.Create(new ProductRegistrationForm { ProductName = "Snickeri" });
+            var result = await _productRepository.CreateAsync(service);
+            if (result == null)
+                return Result.BadRequest("Service creation failed");
+        }
+
+        return Result.Ok();
+    }
+
+}
 
