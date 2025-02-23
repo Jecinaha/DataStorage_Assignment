@@ -8,7 +8,8 @@ using PresentationApp;
 using Data.Interfaces;
 
 var service = new ServiceCollection()
-    .AddDbContext<DataContext>(x => x.UseSqlServer("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\projectc#\\DataStorage_Assignment\\Data\\DB\\db.mdf;Integrated Security=True"))
+    .AddDbContext<DataContext>(x =>
+        x.UseSqlite("Data Source=database.db"))
     .AddScoped<IProjectsRepository, ProjectsRepository>()
     .AddScoped<IRoleRepository, RoleRepository>()
     .AddScoped<IProductRepository, ProductRepository>()
@@ -25,8 +26,11 @@ var service = new ServiceCollection()
     .AddScoped<IRoleService, RoleService>()
     .AddScoped<IMenuDialogs, MenuDialogs>();
     
-
 var serviceProvider = service.BuildServiceProvider();
+
+var context = serviceProvider.GetRequiredService<DataContext>();
+context.Database.Migrate();
+
 var menuDialog = serviceProvider.GetRequiredService<IMenuDialogs>();
 menuDialog.Run();
 

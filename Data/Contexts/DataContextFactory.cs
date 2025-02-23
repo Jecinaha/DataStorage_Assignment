@@ -8,8 +8,7 @@ public class DataContextFactory : IDesignTimeDbContextFactory<DataContext>
     public DataContext CreateDbContext(string[] args)
     {
         var optionsBuilder = new DbContextOptionsBuilder<DataContext>();
-        optionsBuilder.UseSqlServer("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\projectc#\\DataStorage_Assignment\\Data\\DB\\db.mdf;Integrated Security=True");
-
+        optionsBuilder.UseSqlite("Data Source=database.db");
         return new DataContext(optionsBuilder.Options);
         
     }
