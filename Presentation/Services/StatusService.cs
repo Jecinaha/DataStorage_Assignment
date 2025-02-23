@@ -13,39 +13,68 @@ public class StatusService(IStatusRepository statusRepository) : IStatusService
 {
     private readonly IStatusRepository _statusRepository = statusRepository;
 
-    public async Task<Status> CreateStatusAsync(StatusRegistrationForm form)
+    public async Task<Result> CreateStatusAsync(StatusRegistrationForm form)
     {
-        var entity = await _statusRepository.GetAsync(x => x.StatusName == form.StatusName);
-        entity ??= await _statusRepository.CreateAsync(StatusFactory.Create(form));
+        if (form == null)
+            return Result.BadRequest("Status registration form is required");
 
-        return StatusFactory.Create(entity);
+        try
+        {
+            if (await _statusRepository.GetAsync(x => ((StatusEntity)x).StatusName == form.StatusName) != null)
+                return Result.AlreadyExists("Status with this email already exists");
+
+            var statusEntity = StatusFactory.Create(form);
+
+            var result = await _statusRepository.CreateAsync(statusEntity);
+            return result != null ? Result.Ok() : Result.BadRequest("Status registration failed");
+        }
+
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return Result.BadRequest("Status registration failed");
+
+        }
     }
 
-    public async Task<IEnumerable<Status>> GetAllStatusAsync()
+    public async Task<Result<IEnumerable<Status>>> GetAllStatusAsync()
     {
-        var entities = await _statusRepository.GetAllAsync();
-        var status = entities.Select(StatusFactory.Create);
-        return status ?? [];
+        var statusEntities = await _statusRepository.GetAllAsync();
+        var status = statusEntities?.Select(StatusFactory.Create);
+        return Result<IEnumerable<Status>>.Ok(status);
     }
 
-    public async Task<Status> GetStatusAsync(Expression<Func<StatusEntity, bool>> expression)
+    public async Task<IResult> GetStatusByIdAsync(int id)
     {
-        var entity = await _statusRepository.GetAsync(expression);
-        var status = StatusFactory.Create(entity);
-        return status ?? null!;
+        var statusEntity = await _statusRepository.GetAsync(x => x.Id == id);
+
+        if (statusEntity == null)
+            return Result.NotFound("Status not found");
+
+        var status = StatusFactory.Create(statusEntity);
+        return Result<Status>.Ok(status);
     }
 
-    public async Task<Status> UpdateStatusAsync(StatusUpdateForm form)
+    public async Task<IResult> UpdateStatusAsync(int id, StatusUpdateForm updateForm)
     {
-        var entity = await _statusRepository.UpdateAsync(x => x.Id == form.Id, StatusFactory.Create(form));
-        var status = StatusFactory.Create(entity);
-        return status ?? null!;
+        var statusEntity = await _statusRepository.GetAsync(x => x.Id == id);
+        if (statusEntity == null)
+            return Result.NotFound("Status not found");
+
+        statusEntity = StatusFactory.Create(statusEntity, updateForm);
+        var result = await _statusRepository.UpdateAsync(x => x.Id == id, statusEntity);
+        return result != null ? Result.Ok() : Result.BadRequest("Status update failed");
     }
 
-    public async Task<bool> DeleteStatusAsync(int id)
+    public async Task<IResult> DeleteStatusAsync(int id)
     {
+        var statusEntity = await _statusRepository.GetAsync(x => x.Id == id);
+        if (statusEntity == null)
+            return Result.NotFound("Status not found");
+
         var result = await _statusRepository.DeleteAsync(x => x.Id == id);
-        return result;
+        return result ? Result.Ok() : Result.BadRequest("Status update failed");
     }
+
 
 }

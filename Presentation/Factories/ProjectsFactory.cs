@@ -6,8 +6,6 @@ namespace Business.Factories;
 
 public static class ProjectsFactory
 {
-    public static ProjectsRegistrationForm Create() => new();
-
     public static ProjectsEntity Create(ProjectsRegistrationForm form) => new()
     {
         Title = form.Title,
@@ -23,25 +21,24 @@ public static class ProjectsFactory
         Description = entity.Description,
         StartDate = entity.StartDate,
         EndDate = entity.EndDate,
+        Status = StatusFactory.Create(entity.Status),
+        Customer = CustomerFactory.Create(entity.Customer),
+        Product = ProductFactory.Create(entity.Product),
+        User = UserFactory.Create(entity.User)
+
     };
 
-    public static ProjectsUpdateForm Create(Projects projects) => new()
+    public static ProjectsEntity Create(ProjectsEntity projectsEntity, ProjectsUpdateForm updateForm) => new()
     {
-        Id = projects.Id,
-        Title = projects.Title,
-        Description = projects.Description,
-        StartDate = projects.StartDate,
-        EndDate = projects.EndDate,
-    };
-
-    public static ProjectsEntity Create(ProjectsUpdateForm form) => new()
-    {
-        Id = form.Id,
-        Title = form.Title,
-        Description = form.Description,
-        StartDate = form.StartDate,
-        EndDate = form.EndDate,
+            Id = projectsEntity.Id,
+            Title = projectsEntity.Title,
+            Description = projectsEntity.Description,
+            StartDate = projectsEntity.StartDate,
+            EndDate = projectsEntity.EndDate,
+            Status = projectsEntity.Status,
+            Customer = projectsEntity.Customer,
+            Product = projectsEntity.Product,
+            User = projectsEntity.User
 
     };
-
-}
+ }

@@ -1,13 +1,9 @@
-﻿
-
-using Business.Dtos;
+﻿using Business.Dtos;
 using Business.Factories;
 using Business.Interfaces;
 using Business.Models;
 using Data.Entities;
 using Data.Interfaces;
-using Data.Repositories;
-using System.Linq.Expressions;
 
 namespace Business.Services;
 
@@ -15,41 +11,67 @@ public class CustomerService(ICustomerRepository customerRepository) : ICustomer
 {
     private readonly ICustomerRepository _customerRepository = customerRepository;
 
-    public async Task<Customer> CreateCustomerAsync(CustomerRegistrationForm form)
+    public async Task<Result> CreateCustomerAsync(CustomerRegistrationForm form)
     {
-        var entity = await _customerRepository.GetAsync(x => x.CustomerName == form.CustomerName);
-        entity ??= await _customerRepository.CreateAsync(CustomerFactory.Create(form));
+        if (form == null)
+            return Result.BadRequest("Customer registration form is required");
 
-        return CustomerFactory.Create(entity);
+        try
+        {
+            if (await _customerRepository.GetAsync(x => ((CustomerEntity)x).CustomerName == form.CustomerName) != null)
+                return Result.AlreadyExists("Customer with this email already exists");
+
+            var customerEntity = CustomerFactory.Create(form);
+
+            var result = await _customerRepository.CreateAsync(customerEntity);
+
+            return result != null ? Result.Ok() : Result.BadRequest("Customer registration failed");
+        }
+
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return Result.BadRequest("Customer registration failed");
+
+        }
+    }
+    public async Task<Result<IEnumerable<Customer>>> GetAllCustomerAsync()
+    {
+        var customereEntities = await _customerRepository.GetAllAsync();
+        var customer = customereEntities?.Select(CustomerFactory.Create);
+        return Result<IEnumerable<Customer>>.Ok(customer);
     }
 
-    public async Task<IEnumerable<Customer>> GetAllCustomerAsync()
+    public async Task<IResult> GetCustomerByIdAsync(int id)
     {
-        var entities = await _customerRepository.GetAllAsync();
-        var customer = entities.Select(CustomerFactory.Create);
-        return customer ?? [];
+        var customEntity = await _customerRepository.GetAsync(x => x.Id == id);
+
+        if (customEntity == null)
+            return Result.NotFound("Customer not found");
+
+        var customer = CustomerFactory.Create(customEntity);
+        return Result<Customer>.Ok(customer);
     }
 
-    public async Task<Customer> GetCustomerByIdAsync(Expression<Func<CustomerEntity, bool>> expression)
+    public async Task<IResult> UpdateCustomerAsync(int id, CustomerUpdateForm updateForm)
     {
-        var entity = await _customerRepository.GetAsync(expression);
-        var customer = CustomerFactory.Create(entity);
-        return customer ?? null!;
+        var CustomerEntity = await _customerRepository.GetAsync(x => x.Id == id);
+        if (CustomerEntity == null)
+            return Result.NotFound("Customer not found");
+
+        CustomerEntity = CustomerFactory.Create(CustomerEntity, updateForm);
+        var result = await _customerRepository.UpdateAsync(x => x.Id == id, CustomerEntity);
+        return result != null ? Result.Ok() : Result.BadRequest("Customer update failed");
+
     }
 
-    public async Task<Customer> UpdateCustomerAsync(CustomerUpdateForm form)
+    public async Task<IResult> DeleteCustomerAsync(int id)
     {
-        var entity = await _customerRepository.UpdateAsync(x => x.Id == form.Id, CustomerFactory.Create(form));
-        var customer = CustomerFactory.Create(entity);
-        return customer ?? null!;
-    }
+       var customerENtity = await _customerRepository.GetAsync(x => x.Id == id);
+        if (customerENtity == null)
+            return Result.NotFound("Customer not found");
 
-    public async Task<bool> DeleteCustomerAsync(int id)
-    {
         var result = await _customerRepository.DeleteAsync(x => x.Id == id);
-        return result;
+        return result ? Result.Ok() : Result.BadRequest("Customer update failed");
     }
-
 }
-
-

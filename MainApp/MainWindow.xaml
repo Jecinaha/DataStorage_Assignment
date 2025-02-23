@@ -4,7 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MainApp"
-        xmlns:viewa="clr-namespace:MainApp.Views"
         xmlns:viewmodels="clr-namespace:MainApp.ViewModels"
         d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
         
@@ -14,11 +13,11 @@
 
         <ContentControl Content="{Binding CurrentViewModel}">
             <ContentControl.Resources>
-                <DataTemplate DataType="{x:Type viewmodels:ProjectsViewModel}">
-                    <views:ProjectsView />
+                <DataTemplate DataType="{x:Type viewmodels:HomeViewModel}">
+                    <local:HomeView />
                 </DataTemplate>
             </ContentControl.Resources>
-        </ContentControl>
+            </ContentControl>
 
     </Grid>
 </Window>

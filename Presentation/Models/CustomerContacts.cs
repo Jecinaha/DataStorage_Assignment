@@ -11,12 +11,14 @@ namespace Business.Models
 {
     public class CustomerContacts
     {
-      
         public int Id { get; set; }
-
         public string FirstName { get; set; } = null!;
-      
+
         public string LastName { get; set; } = null!;
+
+        public int CustomerId { get; set; }
+
+        public CustomerContacts Contact { get; set; } = null!;
 
     }
 }

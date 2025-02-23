@@ -1,28 +1,17 @@
-﻿
-using Data.Entities;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-
+﻿using Data.Entities;
 namespace Business.Dtos;
 
 public class ProjectsRegistrationForm
 {
-
-
-    [Required]
-    [Column(TypeName = "nvarchar(150)")]
     public string Title { get; set; } = null!;
-
-    [Required]
     public string? Description { get; set; }
-
-    [Required]
-    [Column(TypeName = "date")]
     public DateTime StartDate { get; set; }
-
-    [Required]
-    [Column(TypeName = "date")]
     public DateTime EndDate { get; set; }
-
-  
+    public StatusEntity Status { get; set; } = null!;
+    public CustomerEntity Customer { get; set; } = null!;
+    public ProductEntity Product { get; set; } = null!;
+    public UserEntity User { get; set; } = null!;
 }
+
+
+ 

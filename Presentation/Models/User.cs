@@ -1,4 +1,6 @@
-﻿namespace Business.Models;
+﻿using Data.Entities;
+
+namespace Business.Models;
 
 public class User
 {
@@ -10,4 +12,7 @@ public class User
 
     public string Email { get; set; } = null!;
 
+
+    public int RoleId { get; set; }
+    public Role Role { get; set; } = null!;
 }

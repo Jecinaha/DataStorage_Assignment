@@ -14,27 +14,21 @@ public static class StatusFactory
     {
         StatusName = form.StatusName,
 
-
     };
 
     public static Status Create(StatusEntity entity) => new()
     {
         Id = entity.Id,
         StatusName = entity.StatusName,
+ 
     };
 
-    public static StatusUpdateForm Create(Status status) => new()
+    public static StatusEntity Create(StatusEntity statusEntity, StatusUpdateForm updateForm) => new()
     {
-        Id = status.Id,
-        StatusName = status.StatusName,
+        Id = statusEntity.Id,
+        StatusName = updateForm.StatusName,
 
     };
 
-    public static StatusEntity Create(StatusUpdateForm form) => new()
-    {
-        Id = form.Id,
-        StatusName = form.StatusName,
-
-    };
 
 }

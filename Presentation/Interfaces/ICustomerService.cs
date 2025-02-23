@@ -1,5 +1,7 @@
 ﻿using System.Linq.Expressions;
 using Business.Dtos;
+using Business.Factories;
+using Business.Interfaces;
 using Business.Models;
 using Data.Entities;
 
@@ -7,10 +9,14 @@ namespace Business.Interfaces
 {
     public interface ICustomerService
     {
-        Task<Customer> CreateCustomerAsync(CustomerRegistrationForm form);
-        Task<bool> DeleteCustomerAsync(int id);
-        Task<IEnumerable<Customer>> GetAllCustomerAsync();
-        Task<Customer> GetCustomerByIdAsync(Expression<Func<CustomerEntity, bool>> expression);
-        Task<Customer> UpdateCustomerAsync(CustomerUpdateForm form);
+        Task<Result> CreateCustomerAsync(CustomerRegistrationForm form);
+        Task<Result<IEnumerable<Customer>>> GetAllCustomerAsync();
+        Task<IResult> GetCustomerByIdAsync(int id);
+        Task<IResult> UpdateCustomerAsync(int id, CustomerUpdateForm updateForm);
+
+        Task<IResult> DeleteCustomerAsync(int id);
     }
 }
+
+
+

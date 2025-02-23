@@ -1,16 +1,14 @@
-﻿using System.Linq.Expressions;
-using Business.Dtos;
-using Business.Models;
-using Data.Entities;
+﻿using Business.Dtos;
 
 namespace Business.Interfaces
 {
     public interface IProjectsService
     {
-        Task<Projects> CreateProjectsAsync(ProjectsRegistrationForm form);
-        Task<bool> DeleteProjectsAsync(int id);
-        Task<IEnumerable<Projects>> GetAllProjectsAsync();
-        Task<Projects> GetProjectAsync(Expression<Func<ProjectsEntity, bool>> expression);
-        Task<Projects> UpdateProjectsAsync(ProjectsUpdateForm form);
+        Task<IResult> CreateProjectsAsync(ProjectsRegistrationForm form);
+        Task<IResult> DeleteProjectsAsync(int id);
+        Task<IResult> GetAllProjectsAsync();
+        Task<IResult> GetProjectsByTitleAsync(string email);
+        Task<IResult> GetProjectsByIdAsync(int id);
+        Task<IResult> UpdateProjectsAsync(int id, ProjectsUpdateForm updateForm);
     }
 }

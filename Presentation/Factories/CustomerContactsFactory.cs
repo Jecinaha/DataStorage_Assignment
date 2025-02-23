@@ -1,6 +1,4 @@
-﻿
-
-using Business.Dtos;
+﻿using Business.Dtos;
 using Business.Models;
 using Data.Entities;
 
@@ -8,13 +6,13 @@ namespace Business.Factories;
 
 public static class CustomerContactsFactory
 {
-    public static CustomerContactsRegistrationForm Create() => new();
+
+    public static CustomerContactsRegistrationForm Create(int customerContactsId) => new();
 
     public static CustomerContactsEntity Create(CustomerContactsRegistrationForm form) => new()
     {
         FirstName = form.FirstName,
         LastName = form.LastName,
-
     };
 
     public static CustomerContacts Create(CustomerContactsEntity entity) => new()
@@ -22,24 +20,12 @@ public static class CustomerContactsFactory
         Id = entity.Id,
         FirstName = entity.FirstName,
         LastName = entity.LastName,
-
-
     };
 
-    public static CustomerContactsUpdateForm Create(CustomerContacts customerContacts) => new()
+    public static CustomerContactsEntity Create(CustomerContactsEntity customerContactsEntity, CustomerContactsUpdateForm updateForm) => new()
     {
-        Id = customerContacts.Id,
-        FirstName = customerContacts.FirstName,
-        LastName = customerContacts.LastName,
-
-
+        Id = customerContactsEntity.Id,
+        FirstName = updateForm.FirstName,
+        LastName = updateForm.LastName,
     };
-
-    public static CustomerContactsEntity Create(CustomerContactsUpdateForm form) => new()
-    {
-        Id = form.Id,
-        FirstName = form.FirstName,
-        LastName = form.LastName,
-    };
-
 }

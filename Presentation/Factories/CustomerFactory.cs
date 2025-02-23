@@ -11,27 +11,21 @@ public static class CustomerFactory
     public static CustomerEntity Create(CustomerRegistrationForm form) => new()
     {
         CustomerName = form.CustomerName,
-
     };
 
     public static Customer Create(CustomerEntity entity) => new()
     {
         Id = entity.Id,
         CustomerName = entity.CustomerName,
-        
+ 
     };
 
-    public static CustomerUpdateForm Create(Customer customer) => new()
+    public static CustomerEntity Create(CustomerEntity CustomerEntity, CustomerUpdateForm updateForm) => new()
     {
-        Id = customer.Id,
-        CustomerName = customer.CustomerName,
-       
+        Id = CustomerEntity.Id,
+        CustomerName = updateForm.CustomerName,
+     
     };
 
-    public static CustomerEntity Create(CustomerUpdateForm form) => new()
-    {
-        Id = form.Id,
-        CustomerName = form.CustomerName,
-    };
 
 }

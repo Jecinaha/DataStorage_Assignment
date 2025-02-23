@@ -1,22 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using Data.Entities;
 
 namespace Business.Dtos;
 
 public class CustomerContactsUpdateForm
 {
-
-    [Key]
-    [Required]
     public int Id { get; set; }
-
-    [Required]
-    [Column(TypeName = "nvarchar(50)")]
     public string FirstName { get; set; } = null!;
-
-    [Required]
-    [Column(TypeName = "nvarchar(50)")]
     public string LastName { get; set; } = null!;
+    public int CustomerId { get; set; }
 
-
+    public CustomerEntity Customer { get; set; } = null!;
 }
+
+

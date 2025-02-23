@@ -1,21 +1,18 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using Data.Entities;
+using Business.Models;
 
 namespace Business.Dtos;
 
 public class UserRegistrationForm
 {
-
-    [Required]
-    [Column(TypeName = "nvarchar(50)")]
     public string FirstName { get; set; } = null!;
 
-    [Required]
-    [Column(TypeName = "nvarchar(50)")]
     public string LastName { get; set; } = null!;
 
-    [Required]
-    [Column(TypeName = "varchar(150)")]
     public string Email { get; set; } = null!;
 
+    public IEnumerable<ProjectsEntity> Projects { get; set; } = [];
+    public Role Role { get; set; } = null!;
 }
+
+   

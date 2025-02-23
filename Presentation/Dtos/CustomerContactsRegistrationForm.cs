@@ -6,11 +6,13 @@ namespace Business.Dtos;
 
 public class CustomerContactsRegistrationForm
 {
-    [Required]
-    [Column(TypeName = "nvarchar(50)")]
     public string FirstName { get; set; } = null!;
 
-    [Required]
-    [Column(TypeName = "nvarchar(50)")]
     public string LastName { get; set; } = null!;
+
+    public int CustomerId { get; set; }
+
+    public CustomerEntity Customer { get; set; } = null!;
+
+
 }
