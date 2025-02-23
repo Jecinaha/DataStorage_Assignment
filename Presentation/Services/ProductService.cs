@@ -5,6 +5,7 @@ using Business.Interfaces;
 using Business.Models;
 using Data.Entities;
 using Data.Interfaces;
+using Data.Repositories;
 
 namespace Business.Services;
 
@@ -12,40 +13,64 @@ public class ProductService(IProductRepository productRepository) : IProductServ
 {
     private readonly IProductRepository _productRepository = productRepository;
 
-    public async Task<Product> CreateProductAsync(ProductRegistrationForm form)
+    public async Task<Result> CreateProductAsync(ProductRegistrationForm form)
     {
-        var entity = await _productRepository.GetAsync(x => x.ProductName == form.ProductName);
-        entity ??= await _productRepository.CreateAsync(ProductFactory.Create(form));
+        if (form == null)
+            return Result.BadRequest("Product registration form is required");
 
-        return ProductFactory.Create(entity);
+        try
+        {
+            if (await _productRepository.GetAsync(x => ((ProductEntity)x).ProductName == form.ProductName) != null)
+                return Result.AlreadyExists("Product with this email already exists");
+
+            var productEntity = ProductFactory.Create(form);
+
+            var result = await _productRepository.CreateAsync(productEntity);
+            return result != null ? Result.Ok() : Result.BadRequest("Product registration failed");
+        }
+
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return Result.BadRequest("Product registration failed");
+        }
     }
 
-    public async Task<IEnumerable<Product>> GetAllProductsAsync()
+    public async Task<Result<IEnumerable<Product>>> GetAllProductAsync()
     {
-        var entities = await _productRepository.GetAllAsync();
-        var products = entities.Select(ProductFactory.Create);
-        return products ?? [];
+        var productEntities = await _productRepository.GetAllAsync();
+        var product = productEntities?.Select(ProductFactory.Create);
+        return Result<IEnumerable<Product>>.Ok(product);
     }
 
-    public async Task<Product> GetProductByIdAsync(Expression<Func<ProductEntity, bool>> expression)
+    public async Task<IResult> GetProductByIdAsync(int id)
     {
-        var entity = await _productRepository.GetAsync(expression);
-        var product = ProductFactory.Create(entity);
-        return product ?? null!;
+        var productEntity = await _productRepository.GetAsync(x => x.Id == id);
+
+        if (productEntity == null)
+            return Result.NotFound("Product not found");
+
+        var product = ProductFactory.Create(productEntity);
+        return Result<Product>.Ok(product);
+    }
+    public async Task<IResult> UpdateProductAsync(int id, ProductUpdateForm updateForm)
+    {
+        var productEntity = await _productRepository.GetAsync(x => x.Id == id);
+        if (productEntity == null)
+            return Result.NotFound("Product not found");
+
+        productEntity = ProductFactory.Create(productEntity, updateForm);
+        var result = await _productRepository.UpdateAsync(x => x.Id == id, productEntity);
+        return result != null ? Result.Ok() : Result.BadRequest("Product update failed");
     }
 
-    public async Task<Product> UpdateProductAsync(ProductUpdateForm form)
+    public async Task<IResult> DeleteProductAsync(int id)
     {
-        var entity = await _productRepository.GetAsync(x => x.Id == form.Id);
-        var product = ProductFactory.Create(entity);
-        return product ?? null!;
-    }
+        var productEntity = await _productRepository.GetAsync(x => x.Id == id);
+        if (productEntity == null)
+            return Result.NotFound("Product not found");
 
-    public async Task<bool> DeleteProductAsync(int id)
-    {
         var result = await _productRepository.DeleteAsync(x => x.Id == id);
-        return result;
+        return result ? Result.Ok() : Result.BadRequest("Product update failed");
     }
-
-}
 
